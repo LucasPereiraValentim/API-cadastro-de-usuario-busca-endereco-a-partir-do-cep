@@ -15,15 +15,21 @@ public class UsuarioService{
 	private UsuarioRepository usuarioRepository;
 	
 	public Usuario salvar(Usuario usuario) {
+			// Classe para realizar consumo de api externa
+			RestTemplate restTemplate = new RestTemplate();
+			
+			//Realizando o consumo de API externa
+			Endereco endereco = restTemplate.getForObject("https://viacep.com.br/ws/"+usuario.getEndereco().getCep()+"/json/", Endereco.class);
+			
+			usuario.setEndereco(endereco);
+			
+			usuario.getEndereco().setUsuario(usuario);
+			
+			Usuario usuarioSalvo = usuarioRepository.save(usuario);
+			
+			return usuarioSalvo;
 		
-		
-		RestTemplate restTemplate = new RestTemplate();
-		
-		Endereco endereco = restTemplate.getForObject("https://viacep.com.br/ws/"+usuario.getEndereco().getCep()+"/json/", null)
-		
-		Usuario usuarioSalvo = usuarioRepository.save(usuario);
-		
-		return usuarioSalvo;
 	}
+	
 	
 }

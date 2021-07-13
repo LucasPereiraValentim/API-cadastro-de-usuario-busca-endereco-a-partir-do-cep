@@ -27,7 +27,7 @@ public class Endereco implements Serializable{
 	
 	private String logradouro;
 	
-	private String complmento;
+	private String complemento;
 	
 	private String bairro;
 	
@@ -40,6 +40,16 @@ public class Endereco implements Serializable{
 	@JsonIgnore
 	@OneToOne
 	private Usuario usuario;
+	
+	
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 
 	public Long getId() {
 		return id;
@@ -65,12 +75,12 @@ public class Endereco implements Serializable{
 		this.logradouro = logradouro;
 	}
 
-	public String getComplmento() {
-		return complmento;
+	public String getComplemento() {
+		return complemento;
 	}
 
-	public void setComplmento(String complmento) {
-		this.complmento = complmento;
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
 	}
 
 	public String getBairro() {
