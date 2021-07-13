@@ -66,9 +66,16 @@ public class Controller {
 		}
 	}
 	
-	@PutMapping(value = "/{cpf}")
-	public ResponseEntity<String> atualizarRegistro(@PathVariable String cpf){
-		return null;
+	@PutMapping(value = "/")
+	public ResponseEntity<?> atualizarRegistro(@RequestBody Usuario usuario){
+		
+		if (usuario.getCpf() != null || !usuario.getCpf().isEmpty()) {
+			Usuario usuarioRetorno = usuarioService.atualizar(usuario);
+			return new ResponseEntity<String>("Usuário Atualizado com sucesso!", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Erro ao atualizar", HttpStatus.BAD_REQUEST);
+		}
+			
 	}
 
 }

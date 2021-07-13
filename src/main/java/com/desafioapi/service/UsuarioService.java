@@ -31,5 +31,29 @@ public class UsuarioService{
 		
 	}
 	
+	public Usuario atualizar(Usuario usuario) {
+		
+		Usuario usuarioAtualizado = new Usuario();
+		
+		usuarioAtualizado.setNome(usuario.getNome());
+		usuarioAtualizado.setEmail(usuario.getEmail());
+		usuarioAtualizado.setCpf(usuario.getCpf());
+		usuarioAtualizado.setDataNascimento(usuario.getDataNascimento());
+		
+		
+		RestTemplate restTemplate = new RestTemplate();
+		
+		Endereco endereco = restTemplate.getForObject("https://viacep.com.br/ws/"+usuario.getEndereco().getCep()+"/json/", Endereco.class);
+		
+		usuarioAtualizado.setEndereco(endereco);
+		
+		usuarioAtualizado.getEndereco().setUsuario(usuario);
+		
+		
+		usuarioRepository.save(usuarioAtualizado);
+		
+		return usuarioAtualizado;
+		
+	}
 	
 }
