@@ -1,8 +1,10 @@
 package com.desafioapi.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +34,6 @@ public class Controller {
 	@PostMapping
 	public ResponseEntity<?> salvar(@RequestBody Usuario usuario){
 		
-		if (usuario.getCpf() == null || usuario.getCpf().isEmpty()) {
 			if (!usuarioRepository.verificarCpf(usuario.getCpf())) {
 				Usuario usuarioSalvo = (Usuario) usuarioService.salvar(usuario);
 				return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
@@ -40,20 +41,17 @@ public class Controller {
 				String retorno = "Este CPF já está cadastrado no nosso sistema!";
 				return new ResponseEntity<String>(retorno, HttpStatus.OK);
 			}	
-		} else {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
-		}
 	}
 	
 	@GetMapping(value = "/")
-	public ResponseEntity<List<Usuario>> getLista(){
+	public ResponseEntity<Page<Usuario>> getListaUsuarios(@PageableDefault(page = 0, size = 5, sort = "nome", direction = Direction.ASC) Pageable pageable){
 		
-		List<Usuario> listaUsuario = usuarioRepository.findAll();
+		Page<Usuario> listaUsuario = usuarioRepository.findAll(pageable);
 		
 		if (listaUsuario.isEmpty()) {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} else {
-			return new ResponseEntity<List<Usuario>>(listaUsuario, HttpStatus.OK);
+			return new ResponseEntity<Page<Usuario>>(listaUsuario, HttpStatus.OK);
 		}
 		
 	}
@@ -89,7 +87,7 @@ public class Controller {
 			Usuario usuarioPesquisado = usuarioRepository.findById(cpf).get();
 			return new ResponseEntity<Usuario>(usuarioPesquisado, HttpStatus.OK);
 		} else {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}
 
