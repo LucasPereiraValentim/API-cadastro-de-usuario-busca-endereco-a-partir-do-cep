@@ -32,13 +32,17 @@ public class Controller {
 	@PostMapping
 	public ResponseEntity<?> salvar(@RequestBody Usuario usuario){
 		
-		if (!usuarioRepository.verificarCpf(usuario.getCpf())) {
-			Usuario usuarioSalvo = (Usuario) usuarioService.salvar(usuario);
-			return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
+		if (usuario.getCpf() == null || usuario.getCpf().isEmpty()) {
+			if (!usuarioRepository.verificarCpf(usuario.getCpf())) {
+				Usuario usuarioSalvo = (Usuario) usuarioService.salvar(usuario);
+				return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
+			} else {
+				String retorno = "Este CPF já está cadastrado no nosso sistema!";
+				return new ResponseEntity<String>(retorno, HttpStatus.OK);
+			}	
 		} else {
-			String retorno = "Este CPF já está cadastrado no nosso sistema!";
-			return new ResponseEntity<String>(retorno, HttpStatus.OK);
-		}	
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	@GetMapping(value = "/")
@@ -76,6 +80,17 @@ public class Controller {
 			return new ResponseEntity<String>("Erro ao atualizar", HttpStatus.BAD_REQUEST);
 		}
 			
+	}
+	
+	@GetMapping(value = "/busca/{cpf}")
+	public ResponseEntity<Usuario> getUsuario(@PathVariable String cpf){
+		
+		if (cpf != null) {
+			Usuario usuarioPesquisado = usuarioRepository.findById(cpf).get();
+			return new ResponseEntity<Usuario>(usuarioPesquisado, HttpStatus.OK);
+		} else {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
 	}
 
 }
